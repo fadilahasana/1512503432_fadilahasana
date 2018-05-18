@@ -4,7 +4,7 @@ namespace App\Http\Transformers;
 use League\Fractal\TransformerAbstract;
 use App\Http\Models\Book;
 
-class TranformerBook extends TransformerAbstract
+class TransformerBook extends TransformerAbstract
 {
     public function transform(Book $field)
     {

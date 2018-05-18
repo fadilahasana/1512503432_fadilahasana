@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Models\Book;
 use App\Http\Models\Category;
-use App\Http\Transformers\TranformerBook;
+use App\Http\Transformers\TransformerBook;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Helpers;
 use Mockery\Exception;
@@ -16,7 +15,7 @@ class BookController extends Controller
     public function index () {
         $orm = Book::all();
 
-        return $this->response->collection($orm, new TranformerBook);
+        return $this->response->collection($orm, new TransformerBook);
     }
     public function show ($id) {
         try {
@@ -27,10 +26,10 @@ class BookController extends Controller
             return $e;
         }
         if ( $orm ) {
-            return $this->response->item($orm, new TranformerBook);
+            return $this->response->item($orm, new BookTransformer);
         }
 
-        return $this->response->errorNotFound('Data Tidak Ketemu');
+        return $this->response->errorNotFound('Data Tcategory_idak Ketemu');
     }
 
     public function destroy ($id) {
@@ -45,31 +44,30 @@ class BookController extends Controller
             return response('Data Berhasil Dihapus');
         }
 
-        return $this->response->errorNotFound('Data tidak ketemu');
+        return $this->response->errorNotFound('Data tcategory_idak ketemu');
     }
 
     public function store (Request $request) {
 
-        //        $book = Book::where('categories_id','=',Category::find($id));
 
         $data = $request->only([
-            'judul',
-            'kategori',
-            'author',
-            'isbn',
-            'penerbit'
+                'id',
+                'title',
+                'isbn',
+                'author',
+                'publish'
         ]);
 
-        $idcat = Category::find($data['kategori']);
+        $idcat = Category::find($data['id']);
 
         if($idcat)
         {
             $insert = new Book([
-                'title' => $data['judul'],
-                'category_id' => $data['kategori'],
-                'author' => $data['pengarang'],
-                'isbn' => $data['isbn'],
-                'publish' => $data['penerbit']
+               'category_id' => $data['id'],
+                    'title' => $data['title'],
+                    'isbn' => $data['isbn'],
+                    'author' => $data['author'],
+                    'publish' => $data['publish'],
             ]);
 
             try {
@@ -82,7 +80,7 @@ class BookController extends Controller
 
             return response('Berhasil Tambah Data Buku');
         }else {
-            $this->response->errorNotFound('data kategori tidak ditemukan');
+            $this->response->errorNotFound('data kategori tcategory_idak ditemukan');
         }
     }
 
@@ -95,36 +93,36 @@ class BookController extends Controller
         }
         if($update){
             $data = $request->only([
-                'judul',
-                'kategori',
-                'author',
+                'id',
+                'title',
                 'isbn',
-                'penerbit'
+                'author',
+                'publish'
             ]);
 
-            $idcat = Category::find($data['kategori']);
+            $idcat = Category::find($data['id']);
 
             if($idcat)
             {
                 $update->fill([
-                    'title' => $data['judul'],
-                    'category_id' => $data['kategori'],
-                    'author' => $data['pengarang'],
+                    'category_id' => $data['id'],
+                    'title' => $data['title'],
                     'isbn' => $data['isbn'],
-                    'publish' => $data['penerbit']  
+                    'author' => $data['author'],
+                    'publish' => $data['publish'],
                     ]);
                 try{
-                    $update->update();
+                    $update->save();
                 }catch (Exception $e){
                     $this->response->error($e,500);
                 }
                 return response('Data Berhasil di Update');
             }else{
-                return response('Data kategori tidak ditemukan');
+                return response('Data kategori tcategory_idak ditemukan');
             }
 
         }else{
-            $this->response->errorNotFound('data tidak berhasil di Update');
+            $this->response->errorNotFound('data tcategory_idak berhasil di Update');
         }
     }
 }

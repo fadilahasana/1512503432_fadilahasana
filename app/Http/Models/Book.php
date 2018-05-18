@@ -10,17 +10,19 @@ class Book extends Model
     use SoftDeletes;
 
 //dila
-    
+
 
     protected $fillable = [
-        'title',
         'category_id',
+        'title',
         'author',
         'isbn',
         'publish',
     ];
 
-    protected $guarded = [
-        'id'
-    ];
+    protected $guarded = ['id'];
+
+    public function book(){
+    	return $this->belongsTo('App\Http\Models\Category','category_id');
+    	}
 }

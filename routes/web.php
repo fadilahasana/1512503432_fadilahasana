@@ -35,6 +35,7 @@ $api->version('v1',function($api){
   // Delete
   $api->delete('categories/{id}','App\Http\Controllers\CategoryController@destroy');
 
+
 $api->get('books','App\Http\Controllers\BookController@index');
 
   // read
